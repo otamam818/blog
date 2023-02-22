@@ -1,6 +1,10 @@
 use std::collections::HashSet;
 
+// TODO: Modularize funcitons in this file
+
 use wasm_bindgen::prelude::*;
+use handlebars::Handlebars;
+use serde_json::json;
 
 /// Depending on the method of parsing, the number-of-spaces per indent is
 /// often different. By default, like on GitHub, it is 2 spaces
@@ -42,7 +46,20 @@ pub fn convert_text(data: String) -> String {
 
 /// Parses the MarkdownData into a handlebars string
 pub fn parse_md_data(md_data: &MarkdownData) -> String {
-    todo!()
+    let reg = Handlebars::new();
+    match md_data.form {
+        MarkdownForm::Heading(num_heading) => {
+            reg.render_template(
+                "<h{{num_heading}}> {{text}} </h{{num_heading}}>",
+                &json!({
+                    "num_heading" : num_heading,
+                    "text" : md_data.inner_data
+                })
+            ).unwrap()
+        },
+        // TODO: Exhaust the match syntax until you no longer have to use `_`
+        _ => "TODO:".to_owned()
+    }
 }
 
 pub fn get_md_vec(data: &str) -> Vec<MarkdownData> {
@@ -143,5 +160,16 @@ mod tests {
             inner_data: "Hello world".to_string()
         };
         assert_eq!(parse_line(&line), data);
+    }
+
+    #[test]
+    fn makes_proper_headings() {
+        let line = String::from("# Hello title");
+        let result = "<h1> Hello title </h1>";
+        assert_eq!(convert_text(line), result);
+
+        let line = String::from("## Hello subtitle");
+        let result = "<h2> Hello subtitle </h2>";
+        assert_eq!(convert_text(line), result);
     }
 }
