@@ -17,8 +17,9 @@ pub enum MarkdownForm {
     Heading(HeadingNumber),
     UnorderedList(Indentations),
     OrderedList((Indentations, Number)),
-    Code,
-    PrewrittenHTML,
+    // TODO: Implement these
+    // Code,
+    // PrewrittenHTML,
     PlainText
 }
 

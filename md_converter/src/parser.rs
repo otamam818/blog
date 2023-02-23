@@ -41,44 +41,83 @@ pub fn parse_line(line: &str) -> MarkdownData {
     let mut inner_data = line.clone();
 
     // Values to be re-assigned if it matches any other condition
-    if line.starts_with("#") {
-        let line_without_hash = line.trim_matches('#');
-        let heading_number = line.len() - line_without_hash.len();
-        assert!(heading_number <= 6);
-
-        form = MarkdownForm::Heading(heading_number);
-        inner_data = line_without_hash.trim().to_string();
-    } else if line.trim().starts_with("-") {
-        let indents = ( line.len() - line.trim().len() ) / INDENT_SPACES;
-
-        form = MarkdownForm::UnorderedList(indents);
-        inner_data = line
-            .trim().trim_matches('-').trim()
-            .to_string();
-    } else if numbers.contains(&line.trim().chars().nth(0).unwrap()) {
-        let indents = ( line.len() - line.trim().len() ) / INDENT_SPACES;
-
-        let mut candidate_line = line.trim();
-        let mut curr_num = Vec::new();
-        // Remove trailing numbers 
-        while numbers.contains(&candidate_line.chars().nth(0).unwrap()) {
-            curr_num.push(candidate_line.chars().nth(0).unwrap());
-            candidate_line = &candidate_line[1..candidate_line.len()];
+    if is_title(&line) {
+        (form, inner_data) = parse_title(&line);
+    } else if is_unordered_list(&line) {
+        (form, inner_data) = parse_unordered_list(&line);
+    } else if is_ordered_list(&line, &numbers) {
+        if let Some(tup) = parse_ordered_list(&line, &numbers) {
+            (form, inner_data) = tup;
         }
-
-        // Containing a `.` character after the line means its an ordered list
-        if let Some(curr_char) = candidate_line.chars().nth(0) {
-            if curr_char == '.' {
-                let curr_num: usize = curr_num.iter().collect::<String>().parse().unwrap();
-                form = MarkdownForm::OrderedList((indents, curr_num));
-                inner_data
-                  = candidate_line[1..candidate_line.len()].trim().to_string();
-            } 
-        };
     }
 
-    let inner_data = inner_data.to_owned();
     MarkdownData { form, inner_data }
+}
+
+fn is_title(line: &str) -> bool {
+    line.starts_with("#")
+}
+
+fn is_unordered_list(line: &str) -> bool {
+    line.trim().starts_with("-")
+}
+
+fn is_ordered_list(line: &str, numbers: &HashSet<char>) -> bool {
+    numbers.contains(&line.trim().chars().nth(0).unwrap())
+}
+
+fn parse_unordered_list(line: &str) -> (MarkdownForm, String) {
+    let indents = ( line.len() - line.trim().len() ) / INDENT_SPACES;
+
+    (
+        MarkdownForm::UnorderedList(indents),
+        line.trim().trim_matches('-').trim().to_string()
+    )
+}
+
+fn parse_title(line: &str) -> (MarkdownForm, String) {
+    let line_without_hash = line.trim_matches('#');
+    let heading_number = line.len() - line_without_hash.len();
+    assert!(heading_number <= 6);
+
+    (
+        MarkdownForm::Heading(heading_number),
+        line_without_hash.trim().to_string()
+    )
+}
+
+fn parse_ordered_list(line: &str, numbers: &HashSet<char>) -> Option<(MarkdownForm, String)> {
+    let mut candidate_line = line.trim();
+    let mut curr_num = Vec::new();
+
+    // Remove and collect trailing numbers 
+    while numbers.contains(&candidate_line.chars().nth(0).unwrap()) {
+        curr_num.push(candidate_line.chars().nth(0).unwrap());
+        candidate_line = &candidate_line[1..candidate_line.len()];
+    }
+
+    // Containing a `.` character after the set of numbers means its an
+    // ordered list
+    if let Some(curr_char) = candidate_line.chars().nth(0) {
+        if curr_char == '.' {
+            let curr_num: usize = curr_num.iter()
+                .collect::<String>()
+                .parse()
+                .expect("\
+                    Only numbers were supposed to have been collected
+                    previously");
+            let indents = ( line.len() - line.trim().len() )
+                / INDENT_SPACES;
+
+            let form = MarkdownForm::OrderedList((indents, curr_num));
+            let inner_data
+              = candidate_line[1..candidate_line.len()]
+                .trim()
+                .to_string();
+            return Some((form, inner_data));
+        } 
+    }
+    None
 }
 
 fn modify_plaintext (fin_vec: &mut Vec<MarkdownData>, line: &str) {
