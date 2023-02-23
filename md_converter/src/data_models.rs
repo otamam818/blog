@@ -10,12 +10,13 @@ type HeadingNumber = usize;
 /// UnorderedLists and OrderedLists contains a set number of spaces to
 /// identify its indentation
 type Indentations = usize;
+type Number = usize;
 
 #[derive(PartialEq, Debug)]
 pub enum MarkdownForm {
     Heading(HeadingNumber),
     UnorderedList(Indentations),
-    OrderedList(Indentations),
+    OrderedList((Indentations, Number)),
     Code,
     PrewrittenHTML,
     PlainText
