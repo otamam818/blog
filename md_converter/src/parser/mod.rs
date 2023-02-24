@@ -1,25 +1,18 @@
 mod parsers;
 mod checkers;
 
-use std::collections::HashSet;
 use crate::{
     data_models::{MarkdownData, MarkdownForm},
     parser::{checkers::*, parsers::*}
 };
 
 pub fn get_md_vec(data: &str) -> Vec<MarkdownData> {
-    use MarkdownForm::*;
-    let non_plains = HashSet::from([
-        // Markdown's basic syntax, as outlined in John Gruber’s original
-        // design document. All Markdown applications support these elements
-        '#', '-', '`', '*', '>', '[', '!',
-        // Support for numbers
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-    ]);
+    let md_chars = SyntaxChecker::md_chars();
     let mut fin_vec = Vec::new();
+
     for line in data.lines() {
         let first_char = line.trim_start().chars().nth(0).unwrap();
-        if non_plains.contains(&first_char) {
+        if md_chars.contains(&first_char) {
             fin_vec.push(parse_line(line));
             continue;
         }
@@ -27,7 +20,9 @@ pub fn get_md_vec(data: &str) -> Vec<MarkdownData> {
         match fin_vec.last() {
             Some(md_atom) => {
                 match md_atom.form {
-                    PlainText => modify_plaintext(&mut fin_vec, line),
+                    MarkdownForm::PlainText
+                        => modify_plaintext(&mut fin_vec, line),
+
                     _ => fin_vec.push(parse_line(line))
                 }
             },
@@ -39,8 +34,8 @@ pub fn get_md_vec(data: &str) -> Vec<MarkdownData> {
 }
 
 fn parse_line(line: &str) -> MarkdownData {
-    let numbers
-        = HashSet::from(['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']);
+    let numbers = SyntaxChecker::numbers();
+
     // Default values
     let line = line.to_string();
     let mut form = MarkdownForm::PlainText;

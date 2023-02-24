@@ -4,10 +4,7 @@ use serde_json::json;
 
 use crate::{
     parser::get_md_vec,
-    data_models::{
-        MarkdownData,
-        MarkdownForm
-    }
+    data_models::{MarkdownData, MarkdownForm}
 };
 
 #[wasm_bindgen]
