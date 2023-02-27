@@ -3,24 +3,28 @@
 /// often different. By default, like on GitHub, it is 2 spaces
 pub const INDENT_SPACES: usize = 2;
 
-/// A heading can be an h1, h2, etc, we need to know the number to render
-/// it appropriately
-type HeadingNumber = usize;
-
-/// UnorderedLists and OrderedLists contains a set number of spaces to
-/// identify its indentation
-type Indentations = usize;
-type Number = usize;
-
 #[derive(PartialEq, Debug)]
 pub enum MarkdownForm {
-    Heading(HeadingNumber),
-    UnorderedList(Indentations),
-    OrderedList((Indentations, Number)),
+    Heading { heading_number: usize },
+    UnorderedList {
+        indents: usize,
+        inner_bullet: Option<Box<MarkdownData>>
+    },
+    OrderedList {
+        indents: usize,
+        current_number: usize,
+        inner_bullet: Option<Box<MarkdownData>>
+    },
     // TODO: Implement these
     // Code,
     // PrewrittenHTML,
-    PlainText
+    PlainText { has_line_break: bool }
+}
+
+impl MarkdownForm {
+    pub fn new_plaintext() -> MarkdownForm {
+        MarkdownForm::PlainText { has_line_break: true }
+    }
 }
 
 #[derive(PartialEq, Debug)]
