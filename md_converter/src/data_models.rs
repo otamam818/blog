@@ -3,7 +3,7 @@
 /// often different. By default, like on GitHub, it is 2 spaces
 pub const INDENT_SPACES: usize = 2;
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub enum MarkdownForm {
     Heading { heading_number: usize },
     UnorderedList {
@@ -27,7 +27,7 @@ impl MarkdownForm {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct MarkdownData {
     pub form: MarkdownForm,
     pub inner_data: String
