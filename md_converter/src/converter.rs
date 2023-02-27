@@ -21,11 +21,11 @@ pub fn convert_text(data: String) -> String {
 pub fn parse_md_data(md_data: &MarkdownData) -> String {
     let reg = Handlebars::new();
     match md_data.form {
-        MarkdownForm::Heading(num_heading) => {
+        MarkdownForm::Heading { heading_number } => {
             reg.render_template(
                 "<h{{num_heading}}> {{text}} </h{{num_heading}}>",
                 &json!({
-                    "num_heading" : num_heading,
+                    "num_heading" : heading_number,
                     "text" : md_data.inner_data
                 })
             ).unwrap()

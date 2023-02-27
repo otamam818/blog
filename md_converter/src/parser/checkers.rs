@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 pub struct SyntaxChecker;
 impl SyntaxChecker {
+    #[allow(dead_code)]
     pub fn md_chars() -> HashSet<char> {
         HashSet::from([
             // Markdown's basic syntax, as outlined in John Gruber’s original
