@@ -17,6 +17,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
+      working-directory: ./md_converter
       run: cargo build --verbose
     - name: Run tests
+      working-directory: ./md_converter
       run: cargo test --verbose
