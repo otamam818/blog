@@ -1,15 +1,6 @@
 use std::collections::HashSet;
 use crate::data_models::{MarkdownForm, INDENT_SPACES};
 
-pub fn parse_unordered_list(line: &str) -> (MarkdownForm, String) {
-    let indents = ( line.len() - line.trim().len() ) / INDENT_SPACES;
-
-    (
-        MarkdownForm::UnorderedList { inner_bullet: None, indents },
-        line.trim().trim_matches('-').trim().to_string()
-    )
-}
-
 pub fn parse_title(line: &str) -> (MarkdownForm, String) {
     let line_without_hash = line.trim_matches('#');
     let heading_number = line.len() - line_without_hash.len();
@@ -21,13 +12,23 @@ pub fn parse_title(line: &str) -> (MarkdownForm, String) {
     )
 }
 
-pub fn parse_ordered_list(line: &str, numbers: &HashSet<char>) -> Option<(MarkdownForm, String)> {
+pub fn parse_list(line: &str, numbers: &HashSet<char>) -> Option<(MarkdownForm, String)> {
     let mut candidate_line = line.trim();
-    let mut current_number = Vec::new();
+
+    let is_unordered = candidate_line.starts_with("- ");
+    if is_unordered {
+        let inner_data = candidate_line[2..candidate_line.len()].to_string();
+        let indents = ( line.len() - line.trim().len() ) / INDENT_SPACES;
+        let form = MarkdownForm::List {
+            indents,
+            is_ordered: false,
+            inner_bullet: None
+        };
+        return Some((form, inner_data));
+    }
 
     // Remove and collect trailing numbers 
-    while numbers.contains(&candidate_line.chars().nth(0).unwrap()) {
-        current_number.push(candidate_line.chars().nth(0).unwrap());
+    while numbers.contains(&get_nth_char(candidate_line, 1)) {
         candidate_line = &candidate_line[1..candidate_line.len()];
     }
 
@@ -35,18 +36,10 @@ pub fn parse_ordered_list(line: &str, numbers: &HashSet<char>) -> Option<(Markdo
     // ordered list
     if let Some(curr_char) = candidate_line.chars().nth(0) {
         if curr_char == '.' {
-            let current_number: usize = current_number.iter()
-                .collect::<String>()
-                .parse()
-                .expect("\
-                    Only numbers were supposed to have been collected
-                    previously");
-            let indents = ( line.len() - line.trim().len() )
-                / INDENT_SPACES;
-
-            let form = MarkdownForm::OrderedList {
+            let indents = ( line.len() - line.trim().len() ) / INDENT_SPACES;
+            let form = MarkdownForm::List {
+                is_ordered: true,
                 indents,
-                current_number,
                 inner_bullet: None
             };
             let inner_data
@@ -57,5 +50,9 @@ pub fn parse_ordered_list(line: &str, numbers: &HashSet<char>) -> Option<(Markdo
         } 
     }
     None
+}
+
+fn get_nth_char(line: &str, n: usize) -> char {
+    line.chars().nth(n-1).unwrap()
 }
 

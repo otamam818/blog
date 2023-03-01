@@ -21,7 +21,7 @@ fn flatten_unordered_list <'a> (
     fin_vec: &mut Vec<MarkdownData>
 ) {
     let mut data_holder = Vec::new();
-    while let MarkdownForm::UnorderedList { .. } = md_atom.form {
+    while let MarkdownForm::List { .. } = md_atom.form {
         data_holder.push(md_atom);
 
         *md_next = vec_iter.next();
@@ -36,14 +36,18 @@ fn flatten_unordered_list <'a> (
         while data_holder.len() > 0 {
             let new_data = data_holder.pop().expect("len > 0");
             #[allow(unused_variables)]
-            let form = if let MarkdownForm::UnorderedList {
+            let form = if let MarkdownForm::List {
                 indents,
-                inner_bullet
+                inner_bullet,
+                is_ordered
             } = &new_data.form {
                 // Inner bullet should be None at this point anyways
                 let inner_bullet = Some(Box::new(curr_md_form));
-                let indents = *indents;
-                MarkdownForm::UnorderedList { indents, inner_bullet }
+                MarkdownForm::List {
+                    indents: *indents,
+                    inner_bullet,
+                    is_ordered: *is_ordered
+                }
             } else {
                 panic!("First if statement didn't get true by default");
             };
@@ -122,16 +126,18 @@ mod tests {
     fn flattens_unordered_list() {
         let data = vec![
             MarkdownData {
-                form: MarkdownForm::UnorderedList {
+                form: MarkdownForm::List {
                     indents: 0,
-                    inner_bullet: None
+                    inner_bullet: None,
+                    is_ordered: false
                 },
                 inner_data: "Outer Bullet".to_string()
             },
             MarkdownData {
-                form: MarkdownForm::UnorderedList {
+                form: MarkdownForm::List {
                     indents: 1,
-                    inner_bullet: None
+                    inner_bullet: None,
+                    is_ordered: false
                 },
                 inner_data: "Inner Bullet".to_string()
             }
@@ -139,17 +145,19 @@ mod tests {
         let data = flatten_md_data(data);
         let data = data.get(0).expect("Data made manually").clone();
         assert_eq!(data, MarkdownData {
-            form: MarkdownForm::UnorderedList {
+            form: MarkdownForm::List {
                 indents: 0,
+                is_ordered: false,
                 inner_bullet: Some(Box::new(MarkdownData {
-                    form: MarkdownForm::UnorderedList {
+                    form: MarkdownForm::List {
                         indents: 1,
-                        inner_bullet: None
+                        inner_bullet: None,
+                        is_ordered: false
                     },
                     inner_data: "Inner Bullet".to_string()
                 }))
             },
-            inner_data: "Outer Bullet".to_string()
+            inner_data: "Outer Bullet".to_string(),
         });
     }
 }

@@ -53,12 +53,11 @@ pub fn parse_line(line: &str) -> MarkdownData {
     // Values to be re-assigned if it matches any other condition
     if is_title(&line) {
         (form, inner_data) = parse_title(&line);
-    } else if is_unordered_list(&line) {
-        (form, inner_data) = parse_unordered_list(&line);
-    } else if is_ordered_list(&line, &numbers) {
-        if let Some(tup) = parse_ordered_list(&line, &numbers) {
-            (form, inner_data) = tup;
-        }
+    } else if let Some(tup) = parse_list(&line, &numbers) {
+        // The checking and parsing of list tags (ordered or not) use some of
+        // the same computations, so this pattern is used to prevent the need
+        // to repeat these
+        (form, inner_data) = tup;
     }
 
     MarkdownData { form, inner_data }
@@ -89,14 +88,22 @@ mod tests {
     fn unordered_list_understood() {
         let line = String::from("- Hello world");
         let data = MarkdownData {
-            form: MarkdownForm::UnorderedList { indents: 0, inner_bullet: None },
+            form: MarkdownForm::List {
+                indents: 0,
+                is_ordered: false,
+                inner_bullet: None
+            },
             inner_data: "Hello world".to_string()
         };
         assert_eq!(parse_line(&line), data);
 
         let line = String::from("  - Hello world");
         let data = MarkdownData {
-            form: MarkdownForm::UnorderedList { indents: 1, inner_bullet: None },
+            form: MarkdownForm::List {
+                indents: 1,
+                inner_bullet: None,
+                is_ordered: false
+            },
             inner_data: "Hello world".to_string()
         };
         assert_eq!(parse_line(&line), data);
@@ -106,10 +113,10 @@ mod tests {
     fn ordered_list_understood() {
         let line = String::from("1. Hello world");
         let data = MarkdownData {
-            form: MarkdownForm::OrderedList {
+            form: MarkdownForm::List {
                 indents: 0,
-                current_number: 1,
-                inner_bullet: None
+                inner_bullet: None,
+                is_ordered: true
             },
             inner_data: "Hello world".to_string()
         };
@@ -117,9 +124,9 @@ mod tests {
 
         let line = String::from("  2. Hello world");
         let data = MarkdownData {
-            form: MarkdownForm::OrderedList {
+            form: MarkdownForm::List {
                 indents: 1,
-                current_number: 2,
+                is_ordered: true,
                 inner_bullet: None
             },
             inner_data: "Hello world".to_string()
