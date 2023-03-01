@@ -6,13 +6,9 @@ pub const INDENT_SPACES: usize = 2;
 #[derive(PartialEq, Debug, Clone)]
 pub enum MarkdownForm {
     Heading { heading_number: usize },
-    UnorderedList {
+    List {
         indents: usize,
-        inner_bullet: Option<Box<MarkdownData>>
-    },
-    OrderedList {
-        indents: usize,
-        current_number: usize,
+        is_ordered: bool,
         inner_bullet: Option<Box<MarkdownData>>
     },
     // TODO: Implement these
