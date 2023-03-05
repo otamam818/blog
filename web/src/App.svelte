@@ -1,9 +1,15 @@
 <script>
+  import "./globals.scss";
+
   const TWO_SECONDS = 2000;
   let welcomeClass = "big-text";
   setTimeout(() => {
     welcomeClass = "";
   }, TWO_SECONDS);
+
+  // TODO: Modularize Welcome Page into separate Page
+  // TODO: Set up Svelte router for different pages
+  // TODO: Add more content to welcome page
 </script>
 
 <main>
