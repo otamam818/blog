@@ -1,25 +1,41 @@
 <script>
-  import init, { get_form } from './pkg/md_converter.js';
-  let text;
-  fetch('http://raw.githubusercontent.com/otamam818/blog/main/README.md').then(value => {
-    return value.text()
-  }).then(value => {
-    text = value;
-  });
-
-  let wasmText;
-  init().then(() => {
-    wasmText = get_form('# Hi there');
-    console.log(wasmText);
-    wasmText = get_form('Bye');
-    console.log(wasmText);
-  });
+  const TWO_SECONDS = 2000;
+  let welcomeClass = "big-text";
+  setTimeout(() => {
+    welcomeClass = "";
+  }, TWO_SECONDS);
 </script>
 
 <main>
-  Hello world
-  <br />
-  {text ? text : ""}
-  <br />
-  {wasmText ? wasmText : ""}
+  <span class={welcomeClass}> Welcome </span>
+  <span> to my blog </span>
 </main>
+
+<style lang="scss">
+main {
+  background-color: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  z-index: 0;
+
+  & > span {
+    transition: 200ms;
+  }
+
+  span {
+    color: white;
+  }
+}
+
+.big-text {
+  font-size: 24px;
+}
+
+</style>
