@@ -35,6 +35,11 @@ pub fn parse_md_data(md_data: &MarkdownData) -> String {
     }
 }
 
+#[allow(dead_code)]
+fn parse_list(_md_data: &MarkdownData, _reg: &Handlebars) -> String {
+    todo!();
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

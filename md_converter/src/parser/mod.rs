@@ -7,37 +7,15 @@ use crate::{
     parser::{checkers::*, parsers::*}
 };
 
+use self::flattener::flatten_md_data;
+
 pub fn get_md_vec(data: &str) -> Vec<MarkdownData> {
     let fin_vec = data.lines()
         .map(|line| parse_line(line))
         .collect::<Vec<MarkdownData>>();
 
-    /*
-    let md_chars = SyntaxChecker::md_chars();
-    let mut fin_vec: Vec<MarkdownData> = Vec::new();
-
-    for line in data.lines() {
-        let first_char = line.trim_start().chars().nth(0).unwrap();
-        if md_chars.contains(&first_char) {
-            fin_vec.push(parse_line(line));
-            continue;
-        }
-
-        match fin_vec.last() {
-            Some(md_atom) => {
-                match md_atom.form {
-                    MarkdownForm::PlainText { .. }
-                        => modify_plaintext(&mut fin_vec, line),
-
-                    _ => fin_vec.push(parse_line(line))
-                }
-            },
-            None => fin_vec.push(parse_line(line))
-        };
-    }
-    */
-
-    // TODO: Flatten all adjacent MarkdownForm Lists
+    // Flatten all adjacent MarkdownForm Lists
+    let fin_vec = flatten_md_data(fin_vec);
 
     fin_vec
 }

@@ -1,7 +1,5 @@
 use crate::data_models::{MarkdownForm, MarkdownData};
 
-// TODO: Use this code eventually in the `get_md_vec` function
-#[allow(dead_code)]
 pub fn flatten_md_data(init_vec: Vec<MarkdownData>) -> Vec<MarkdownData> {
     let mut fin_vec = Vec::new();
     let mut vec_iter = init_vec.iter();
