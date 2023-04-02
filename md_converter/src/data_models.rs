@@ -1,3 +1,4 @@
+//! This file defines the main abstractions used to parse and convert data
 
 /// Depending on the method of parsing, the number-of-spaces per indent is
 /// often different. By default, like on GitHub, it is 2 spaces

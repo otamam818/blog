@@ -1,3 +1,5 @@
+//! This file contains the implementations for parsing the data
+
 use std::collections::HashSet;
 use crate::data_models::{MarkdownForm, INDENT_SPACES};
 
