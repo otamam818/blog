@@ -24,7 +24,9 @@ pub fn parse_list(line: &str, numbers: &HashSet<char>) -> Option<(MarkdownForm, 
         let form = MarkdownForm::List {
             indents,
             is_ordered: false,
-            inner_bullet: None
+            inner_bullet: None,
+            // TODO: Remember to flatten any adjacent list that comes up
+            next_bullet: None,
         };
         return Some((form, inner_data));
     }
@@ -42,7 +44,9 @@ pub fn parse_list(line: &str, numbers: &HashSet<char>) -> Option<(MarkdownForm, 
             let form = MarkdownForm::List {
                 is_ordered: true,
                 indents,
-                inner_bullet: None
+                inner_bullet: None,
+                // TODO: Remember to flatten any adjacent list that comes up
+                next_bullet: None,
             };
             let inner_data
               = candidate_line[1..candidate_line.len()]

@@ -11,7 +11,7 @@ pub enum MarkdownForm {
         indents: usize,
         is_ordered: bool,
         inner_bullet: Option<Box<MarkdownData>>,
-        // next_bullet: Option<Box<MarkdownData>>
+        next_bullet: Option<Box<MarkdownData>>
     },
     // TODO: Implement these
     // Code,
