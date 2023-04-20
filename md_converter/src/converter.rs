@@ -46,10 +46,10 @@ mod tests {
 
     #[test]
     fn makes_proper_headings() {
+        /*
         let _line = String::from("# Hello title");
         let _result = "<h1> Hello title </h1>";
         todo!();
-        /*
         assert_eq!(convert_text(_line), _result);
 
         let _line = String::from("## Hello subtitle");

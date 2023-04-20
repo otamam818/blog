@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use crate::data_models::{MarkdownForm, MarkdownData};
 
 pub fn flatten_md_data(init_vec: Vec<MarkdownData>) -> Vec<MarkdownData> {
@@ -19,9 +21,9 @@ fn flatten_list <'a> (
     fin_vec: &mut Vec<MarkdownData>
 ) {
     // Collect all adjacent List objects into a separate vector
-    let mut data_holder = Vec::new();
+    let mut data_holder = VecDeque::new();
     while let MarkdownForm::List { .. } = md_atom.form {
-        data_holder.push(md_atom);
+        data_holder.push_back(md_atom);
 
         *md_next = vec_iter.next();
         match *md_next {
@@ -31,7 +33,7 @@ fn flatten_list <'a> (
     }
 
     // TODO: Make a new function that recursively makes the new struct
-    match data_holder.pop() {
+    match data_holder.pop_front() {
         None => (),
         Some(initial_data) => {
             fin_vec.push(flatten_list_vec(data_holder, initial_data))
@@ -107,7 +109,7 @@ fn destructure_list_values(container: &MarkdownData) -> (
     )
 }
 
-fn flatten_list_vec(data_holder: Vec<&MarkdownData>, initial_data: &MarkdownData) -> MarkdownData {
+fn flatten_list_vec(data_holder: VecDeque<&MarkdownData>, initial_data: &MarkdownData) -> MarkdownData {
     let (next_bullet, inner_bullet);
     let (
         init_inner_data,
@@ -116,7 +118,7 @@ fn flatten_list_vec(data_holder: Vec<&MarkdownData>, initial_data: &MarkdownData
         init_inner_bullet,
         init_next_bullet
     ) = destructure_list_values(initial_data);
-    match data_holder.clone().pop() {
+    match data_holder.clone().pop_front() {
         None => initial_data.clone(),
         Some(list_atom) => {
             let (
