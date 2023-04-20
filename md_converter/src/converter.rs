@@ -31,7 +31,7 @@ pub fn parse_md_data(md_data: &MarkdownData) -> String {
             ).unwrap()
         },
         // TODO: Exhaust the match syntax until you no longer have to use `_`
-        _ => "TODO:".to_owned()
+        _ => panic!("Unimplemented")
     }
 }
 
@@ -42,16 +42,20 @@ fn parse_list(_md_data: &MarkdownData, _reg: &Handlebars) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
     #[test]
     fn makes_proper_headings() {
-        let line = String::from("# Hello title");
-        let result = "<h1> Hello title </h1>";
-        assert_eq!(convert_text(line), result);
+        let _line = String::from("# Hello title");
+        let _result = "<h1> Hello title </h1>";
+        todo!();
+        /*
+        assert_eq!(convert_text(_line), _result);
 
-        let line = String::from("## Hello subtitle");
-        let result = "<h2> Hello subtitle </h2>";
-        assert_eq!(convert_text(line), result);
+        let _line = String::from("## Hello subtitle");
+        let _result = "<h2> Hello subtitle </h2>";
+        todo!();
+        assert_eq!(convert_text(_line), _result);
+        */
     }
 }

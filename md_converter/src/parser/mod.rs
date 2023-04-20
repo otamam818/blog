@@ -69,7 +69,8 @@ mod tests {
             form: MarkdownForm::List {
                 indents: 0,
                 is_ordered: false,
-                inner_bullet: None
+                inner_bullet: None,
+                next_bullet: None
             },
             inner_data: "Hello world".to_string()
         };
@@ -80,7 +81,8 @@ mod tests {
             form: MarkdownForm::List {
                 indents: 1,
                 inner_bullet: None,
-                is_ordered: false
+                is_ordered: false,
+                next_bullet: None
             },
             inner_data: "Hello world".to_string()
         };
@@ -94,7 +96,8 @@ mod tests {
             form: MarkdownForm::List {
                 indents: 0,
                 inner_bullet: None,
-                is_ordered: true
+                is_ordered: true,
+                next_bullet: None
             },
             inner_data: "Hello world".to_string()
         };
@@ -105,7 +108,8 @@ mod tests {
             form: MarkdownForm::List {
                 indents: 1,
                 is_ordered: true,
-                inner_bullet: None
+                inner_bullet: None,
+                next_bullet: None
             },
             inner_data: "Hello world".to_string()
         };
