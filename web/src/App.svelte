@@ -1,24 +1,14 @@
 <script>
-  import "./globals.scss";
-
-  const TWO_SECONDS = 2000;
-  let welcomeClass = "big-text";
-  setTimeout(() => {
-    welcomeClass = "";
-  }, TWO_SECONDS);
-
-  // TODO: Modularize Welcome Page into separate Page
-  // TODO: Set up Svelte router for different pages
-  // TODO: Add more content to welcome page
+  import Welcome from "./WelcomePage/Welcome.svelte"
 </script>
 
 <main>
-  <span class={welcomeClass}> Welcome </span>
-  <span> to my blog </span>
+  <Welcome />
 </main>
 
 <style lang="scss">
 main {
+  color: white;
   background-color: black;
   position: fixed;
   top: 0;
@@ -30,18 +20,5 @@ main {
   flex-direction: column;
   align-items: center;
   z-index: 0;
-
-  & > span {
-    transition: 200ms;
-  }
-
-  span {
-    color: white;
-  }
 }
-
-.big-text {
-  font-size: 24px;
-}
-
 </style>
