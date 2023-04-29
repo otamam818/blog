@@ -1,31 +1,39 @@
 <script lang="ts">
-  let animationOrder: String = "first";
+  let animationOrder: String = "intro-animation";
 
   setTimeout(() => {
-    animationOrder = "second";
+    // animationOrder = "loop-animation";
   }, 2000)
-
 </script>
 
 <div class="right-side">
-  <div class={`oval skinny ${animationOrder}`}></div>
+  <div class={`oval first skinny ${animationOrder}`}></div>
 </div>
 
 <style lang="scss">
-  .right-side .oval.skinny {
-    background-color: #4c5e8f;
-    border-radius: 50%;
-    rotate: 30deg;
-    filter: blur(50px);
-    opacity: 63%;
-    position: absolute;
+  .right-side {
+    .oval {
+      border-radius: 50%;
+      opacity: 63%;
+      position: absolute;
+      filter: blur(50px);
 
-    &.first {
-      animation: get-fat-inside 2s forwards;
-    }
+      &.first {
+        background-color: #4c5e8f;
+      }
 
-    &.second {
-      animation: skinny-oval-beat 2s infinite;
+      &.intro-animation {
+        animation: get-fat-inside 4s forwards;
+      }
+
+      &.loop-animation {
+        animation: skinny-oval-beat 5s infinite;
+      }
+
+      &.skinny {
+        // The skinny side is skinny from the animation
+        rotate: 30deg;
+      }
     }
   }
 
@@ -39,11 +47,19 @@
       height: 80vh;
     }
 
-    50% {
+    25%, 55% {
+      opacity: 1;
       left: 60%;
       top: 15%;
-      width: 60vh;
+      width: 80vh;
       height: 80vh;
+    }
+
+    58% {
+      left: 65%;
+      top: 10%;
+      width: 84vh;
+      height: 92vh;
     }
 
     100% {
