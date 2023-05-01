@@ -2,7 +2,7 @@
   let animationOrder: String = "intro-animation";
 
   setTimeout(() => {
-    // animationOrder = "loop-animation";
+    animationOrder = "loop-animation";
   }, 2000)
 </script>
 
@@ -65,26 +65,28 @@
     100% {
       opacity: 1;
       left: 60%;
-      top: 30%;
-      width: 30vh;
-      height: 40vh;
+      top: 20%;
+      width: 40vh;
+      height: 60vh;
     }
   }
 
   @keyframes skinny-oval-beat {
     // Slow beats to mimic life into the page
-    0%, 100% {
+    0%, 50%, 100% {
       left: 60%;
-      top: 30%;
-      width: 30vh;
-      height: 40vh;
+      top: 20%;
+      width: 40vh;
+      height: 60vh;
+      rotate: 30deg;
     }
 
-    50% {
+    20% {
       left: 60%;
       top: 15%;
-      width: 60vh;
-      height: 80vh;
+      width: 37vh;
+      height: 56vh;
+      rotate: 00deg;
     }
   }
 </style>
